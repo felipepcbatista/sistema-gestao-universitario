@@ -1,14 +1,6 @@
----
-type: conhecimento
-status: active
-dominio: pessoal
-created: 2026-09-11
-updated: 2026-09-11
----
-
 # Sistema de Matrículas — PUC Minas | Projeto de Software (2S2026)
 
-Laboratório 1, Sprint 1 (Lab01S01): Modelo de Análise — Diagrama de Caso de Uso + Histórias de Usuário.
+Laboratório 2, Sprint 1 (Lab02S01): Modelo de Análise — Diagrama de Caso de Uso + Histórias de Usuário.
 
 ## 1. Contexto
 

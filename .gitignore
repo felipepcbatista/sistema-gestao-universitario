@@ -1,0 +1,17 @@
+# Bytecode compilado
+*.class
+out/
+bin/
+target/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# Sistema operacional
+.DS_Store
+Thumbs.db

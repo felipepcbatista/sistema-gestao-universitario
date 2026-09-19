@@ -1,0 +1,125 @@
+@startuml Sistema de Matriculas - Diagrama de Classes
+
+skinparam classAttributeIconSize 0
+
+enum TipoMatricula {
+  OBRIGATORIA
+  OPTATIVA
+}
+
+enum StatusMatricula {
+  ATIVA
+  CANCELADA
+}
+
+enum StatusDisciplina {
+  EM_PERIODO_MATRICULA
+  ATIVA
+  CANCELADA
+}
+
+abstract class Usuario {
+  # nome: String
+  # login: String
+  # senha: String
+  # createdAt: DateTime
+  + autenticar(login: String, senha: String): boolean
+}
+
+class Aluno {
+  - matricula: String
+  + consultarCurriculo(semestre: String): Curriculo
+  + matricularEmDisciplina(disciplina: Disciplina, tipo: TipoMatricula): Matricula
+  + cancelarMatricula(matricula: Matricula): void
+  + listarMinhasMatriculas(): List<Matricula>
+}
+
+class Professor {
+  - registroFuncional: String
+  + consultarAlunosMatriculados(disciplina: Disciplina): List<Aluno>
+}
+
+class Secretaria {
+  - registroFuncional: String
+  - universidade: Universidade
+  + cadastrarCurso(nome: String, numeroCreditos: int): Curso
+  + cadastrarDisciplina(curso: Curso, nome: String): Disciplina
+  + gerarCurriculo(semestre: String, disciplinas: List<Disciplina>): Curriculo
+  + registrarAluno(aluno: Aluno): void
+  + registrarProfessor(professor: Professor): void
+}
+
+class Universidade {
+  - alunos: List<Aluno>
+  - professores: List<Professor>
+  - secretarias: List<Secretaria>
+  - cursos: List<Curso>
+  - disciplinas: List<Disciplina>
+  - curriculos: List<Curriculo>
+}
+
+class Curso {
+  - nome: String
+  - numeroCreditos: int
+  - disciplinas: List<Disciplina>
+  + adicionarDisciplina(disciplina: Disciplina): void
+}
+
+class Disciplina {
+  - nome: String
+  - vagasMaximas: int
+  - minimoParaAtivar: int
+  - status: StatusDisciplina
+  - professor: Professor
+  + contarMatriculasAtivas(): int
+  + temVagaDisponivel(): boolean
+  + avaliarFechamentoPeriodo(): void
+}
+
+class Curriculo {
+  - semestre: String
+  - createdAt: DateTime
+  - updatedAt: DateTime
+  - disciplinas: List<Disciplina>
+  + adicionarDisciplina(disciplina: Disciplina): void
+}
+
+class Matricula {
+  - tipo: TipoMatricula
+  - status: StatusMatricula
+  - dataMatricula: DateTime
+  - dataCancelamento: DateTime
+  + cancelar(): void
+}
+
+class SistemaCobranca <<external>> {
+  + notificarNovaMatricula(matricula: Matricula): void
+}
+
+Usuario <|-- Aluno
+Usuario <|-- Professor
+Usuario <|-- Secretaria
+
+Universidade "1" o-- "*" Aluno
+Universidade "1" o-- "*" Professor
+Universidade "1" o-- "*" Secretaria
+Universidade "1" o-- "*" Curso
+Universidade "1" o-- "*" Disciplina
+Universidade "1" o-- "*" Curriculo
+
+Secretaria "*" --> "1" Universidade : opera sobre >
+
+Curso "1" *-- "*" Disciplina
+Professor "1" -- "*" Disciplina : leciona >
+
+Curriculo "1" o-- "*" Disciplina
+
+Aluno "1" -- "*" Matricula
+Disciplina "1" -- "*" Matricula
+Matricula "*" -- "1" TipoMatricula
+Matricula "*" -- "1" StatusMatricula
+Disciplina "1" -- "1" StatusDisciplina
+
+Matricula ..> SistemaCobranca : <<notify>>
+
+@enduml
